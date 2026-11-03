@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UNIT 4 – ENGLISH CHALLENGE</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#14b8a6);min-height:100vh;color:#0f172a}
+[hidden]{display:none!important}
+.card{max-width:820px;margin:16px auto;background:#fff;border-radius:22px;box-shadow:0 10px 30px #0003;padding:20px}
+h1{color:#0369a1;margin:0 0 8px;text-align:center}
+.btn{border:0;border-radius:14px;padding:12px 22px;font-size:1rem;font-weight:700;cursor:pointer;background:#0ea5e9;color:#fff;transition:.15s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}.btn.y{background:#facc15;color:#422006}.btn:disabled{opacity:.4;cursor:default;transform:none}
+.big{font-size:1.3rem;padding:16px 40px;display:block;margin:16px auto}
+.bar{display:flex;justify-content:space-between;font-weight:700;color:#0369a1;flex-wrap:wrap;gap:6px}
+.pg{height:12px;background:#e0f2fe;border-radius:8px;overflow:hidden;margin:10px 0}.pg i{display:block;height:100%;width:0;background:linear-gradient(90deg,#14b8a6,#facc15);transition:.3s}
+.rd{background:#fef9c3;color:#854d0e;border-radius:10px;padding:4px 12px;display:inline-block;font-size:.85rem;font-weight:700}
+#im{font-size:5rem;text-align:center;line-height:1.2}
+#qt{font-size:1.2rem;font-weight:600;margin:10px 0;line-height:1.5}
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.ops{grid-template-columns:1fr}}
+.op{border:3px solid #bae6fd;background:#f0f9ff;border-radius:16px;padding:16px;font-size:1.05rem;font-weight:600;cursor:pointer;text-align:left;transition:.15s;color:#0f172a}
+.op:hover:not(:disabled){background:#e0f2fe;transform:scale(1.02)}.op:disabled{cursor:default}
+.op.ok{background:#bbf7d0;border-color:#16a34a}.op.no{background:#fecaca;border-color:#dc2626}
+#fb{margin:12px 0;padding:12px;border-radius:12px;font-weight:600}.fo{background:#dcfce7;color:#166534}.fx{background:#fee2e2;color:#991b1b}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0}.st div{background:#f0f9ff;border-radius:12px;padding:10px;text-align:center;font-weight:700}
+.ch{display:flex;height:28px;border-radius:14px;overflow:hidden;background:#e5e7eb}
+.li{border-left:6px solid #dc2626;background:#fff7f7;padding:8px 12px;margin:8px 0;border-radius:8px;font-size:.95rem}.li.g{border-color:#16a34a;background:#f0fdf4}
+.cf{position:fixed;font-size:1.6rem;pointer-events:none;animation:fl 1.2s ease-out forwards;z-index:9}@keyframes fl{to{transform:translateY(-200px) rotate(360deg);opacity:0}}
+.ctr{text-align:center}.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
+</style></head><body>
+
+<div class="card ctr" id="home">
+<h1>UNIT 4 – ENGLISH CHALLENGE</h1>
+<div style="font-size:3rem">🏙️🏛️🚉📮⛪🏯</div>
+<p><b>100 questions</b> • 5 rounds • 10 points each • max 1,000 points</p>
+<p style="text-align:left;max-width:520px;margin:auto">📘 Read each question and tap one answer.<br>✅ Correct = +10 points. ❌ Wrong = see the right answer and why.<br>⬅️➡️ Use BACK / NEXT to move between questions. You can answer each question only once.<br>🏁 Finish question 100 to see your results.</p>
+<button class="btn y big" onclick="start(Q.slice())">START GAME</button>
+</div>
+
+<div class="card" id="play" hidden>
+<div class="bar"><span id="qn"></span><span>⭐ <span id="sc">0</span></span><span>⏱ <span id="tm">00:00</span></span><button class="btn" style="padding:4px 12px" id="sb" onclick="togSnd()">🔊</button></div>
+<div class="pg"><i id="pb"></i></div>
+<span class="rd" id="rd"></span>
+<div id="im"></div><div id="qt"></div>
+<div class="ops" id="ops"></div>
+<div id="fb" hidden></div>
+<div class="nav"><button class="btn" id="bk" onclick="go(-1)">⬅ BACK</button><button class="btn y" id="nx" onclick="go(1)">NEXT ➡</button></div>
+</div>
+
+<div class="card" id="end" hidden>
+<h1>🎉 CONGRATULATIONS!</h1>
+<div class="ctr" style="font-size:1.4rem;font-weight:800;color:#0d9488" id="gr"></div>
+<div class="st" id="stt"></div>
+<div class="ch" id="ch"></div>
+<div style="font-size:.85rem;margin:4px 0 12px">🟩 Correct &nbsp; 🟥 Wrong &nbsp; ⬜ Skipped</div>
+<div class="row">
+<button class="btn y" onclick="start(Q.slice())">PLAY AGAIN</button>
+<button class="btn" onclick="review()">REVIEW ANSWERS</button>
+<button class="btn" onclick="retry()">RETRY WRONG QUESTIONS</button>
+<button class="btn" onclick="show('home')">HOME</button></div>
+<h3 id="lt"></h3><div id="ls"></div>
+</div>
+
+<script>
+const P=[["art gallery","phòng trưng bày tranh","🖼️"],["cathedral","nhà thờ lớn","⛪"],["railway station","ga tàu hỏa","🚉"],["temple","đền","🛕"],["workshop","xưởng","🔧"],["post office","bưu điện","📮"],["pagoda","chùa","🏯"],["museum","bảo tàng","🏛️"],["restaurant","nhà hàng","🍽️"],["building","tòa nhà","🏢"],["factory","nhà máy","🏭"]];
+const A=[["busy","bận rộn, nhộn nhịp"],["famous","nổi tiếng"],["faraway","xa xôi"],["narrow","hẹp"],["outdoor","ngoài trời"],["sandy","có cát"],["lost","bị lạc"],["modern","hiện đại"],["crowded","đông đúc"],["quiet","yên tĩnh"],["peaceful","bình yên"],["exciting","thú vị, hào hứng"],["convenient","thuận tiện"],["expensive","đắt đỏ"],["noisy","ồn ào"],["boring","nhàm chán"],["dirty","bẩn"],["heavy","nặng"],["delicious","ngon"]];
+const O=[["dislike","không thích"],["cross","băng qua"],["square","quảng trường"],["turning","chỗ rẽ"],["suburb","vùng ngoại ô"],["finally","cuối cùng"],["neighbourhood","khu phố (neighborhood)"],["present","quà tặng"],["traffic","giao thông"],["show somebody the way to","chỉ đường cho ai đó đến"]];
+const RN=["VOCABULARY CHALLENGE","PICTURE & WORD MATCHING","GRAMMAR & SENTENCE STRUCTURES","DIRECTIONS & PLACES","SUPER CHALLENGE"];
+const Q=[];
+function ds(pool,it,f,i){const r=[];let k=i*5+2;while(r.length<3){k=(k+7)%pool.length;const v=pool[k][f];if(v!==it[f]&&!r.includes(v))r.push(v)}return r}
+function add(rd,q,c,d,e,img){const p=(Q.length*3+1)%4,o=d.slice();o.splice(p,0,c);Q.push({q,o,a:p,e,rd,img})}
+// Round 1
+const pl=A.concat([O[0]]);
+for(let i=0;i<10;i++){const it=A[i];add(0,`What does "${it[0]}" mean?`,it[1],ds(pl,it,1,i),`${it[0]} = ${it[1]}`)}
+for(let i=10;i<20;i++){const it=i<19?A[i]:O[0];add(0,`Choose the English word for "${it[1]}".`,it[0],ds(pl,it,0,i),`${it[1]} = ${it[0]}`)}
+// Round 2
+P.forEach((it,i)=>add(1,"What place is this?",it[0],ds(P,it,0,i),`${it[2]} = ${it[0]} (${it[1]})`,it[2]));
+for(let j=1;j<10;j++){const it=O[j];add(1,`What does "${it[0]}" mean?`,it[1],ds(O,it,1,j),`${it[0]} = ${it[1]}`)}
+// Rounds 3-5: [question, correct, [3 wrong], explanation]
+const L="<i>Linh lives in a quiet neighbourhood in the suburb. There is a small temple and a post office near her house. The streets are narrow, but the traffic is not busy. Her favourite place is the modern art gallery in the city centre. It is a bit faraway, so she goes there by bus.</i><br><br>";
+const F="<i>I live in a big city. My neighborhood is very (1) ___: many people and cars are on the streets. It is also (2) ___ because of the traffic. But it is (3) ___ for shopping. I (4) ___ the noise, so I want to move to the suburb.</i><br><br>";
+const H=[
+[2,"How ___ I get to the museum?","can",["do","am","is"],"How can I get to...? = Làm sao để tôi đến...?"],
+[2,"Could you tell me ___ get to the post office?","how to",["why to","how at","what in"],"how to get to = cách đi đến"],
+[2,"My neighbourhood is very ___. There are no cars at night.","quiet",["noisy","crowded","busy"],"quiet = yên tĩnh"],
+[2,"The street is ___, so two cars can't pass.","narrow",["sandy","heavy","famous"],"narrow = hẹp"],
+[2,"Choose the correct sentence.","The museum is next to the post office.",["The museum next is to the post office.","Is the museum next the to post office.","The museum is to next the post office."],"Word order: S + is + next to + place."],
+[2,"Go ___ this street and turn left.","along",["at","in","for"],"go along = đi dọc theo"],
+[2,"___ the road at the zebra crossing.","Cross",["Across","Crossed","Crosses"],"Imperative: Cross the road."],
+[2,"Turn ___ at the traffic lights.","left",["leftly","to left","at left"],"turn left = rẽ trái"],
+[2,"Can you ___ me the way to the railway station?","show",["look","see","watch"],"show somebody the way to = chỉ đường cho ai đến"],
+[2,"A: Is there a restaurant near here? B: ___","Yes, there is one on the corner.",["Yes, it does.","Yes, I do.","Yes, there are."],"Is there...? → Yes, there is."],
+[2,"The food in this restaurant is ___.","delicious",["narrow","sandy","lost"],"delicious = ngon"],
+[2,"This bag is very ___. I can't carry it.","heavy",["quiet","delicious","modern"],"heavy = nặng"],
+[2,"Mai ___ spicy food, so she never eats it.","dislikes",["likes","enjoys","loves"],"dislike = không thích; he/she + dislikes"],
+[2,"Tom is ___. He doesn't know the way home.","lost",["famous","sandy","modern"],"lost = bị lạc"],
+[2,"The film was ___. I almost fell asleep.","boring",["exciting","delicious","convenient"],"boring = nhàm chán"],
+[2,"Hoi An is a ___ old town; many tourists visit it.","famous",["lost","narrow","heavy"],"famous = nổi tiếng"],
+[2,"It's a ___ building: it has glass walls and a new design.","modern",["sandy","lost","dirty"],"modern = hiện đại"],
+[2,"We often play ___ games in the park.","outdoor",["delicious","heavy","dirty"],"outdoor = ngoài trời"],
+[2,"Living in the city is ___ because shops and buses are near.","convenient",["boring","faraway","sandy"],"convenient = thuận tiện"],
+[2,"The beach is ___; we love to play in the sand.","sandy",["noisy","narrow","modern"],"sandy = có cát"],
+[3,"Choose the best answer to: How can I get to the museum?","Go straight, then turn left at the corner.",["I'm fine, thanks.","Yes, it is.","It's very famous."],"Chỉ đường: go straight, turn left."],
+[3,"'Rẽ phải' in English is ___.","Turn right",["Turn left","Go straight","Cross the road"],"turn right = rẽ phải"],
+[3,"'Đi thẳng' in English is ___.","Go straight",["Turn right","Turn left","Go along"],"go straight = đi thẳng"],
+[3,"'Rẽ trái' in English is ___.","Turn left",["Turn right","Go straight","Cross the road"],"turn left = rẽ trái"],
+[3,"'Take the second turning on the left' means ___.","Rẽ vào lối rẽ thứ hai bên trái",["Rẽ trái ở đèn giao thông","Đi qua đường thứ hai","Rẽ phải ở lối rẽ thứ hai"],"second turning on the left = lối rẽ thứ hai bên trái"],
+[3,"'Go along' means ___.","Đi dọc theo",["Băng qua","Quay lại","Dừng lại"],"go along = đi dọc theo"],
+[3,"Could you show me ___ way to the station?","the",["a","an","on"],"show somebody the way to..."],
+[3,"Which question asks for directions?","How can I get to the railway station?",["How old is the railway station?","What time is the railway station?","Who is the railway station?"],"How can I get to...? hỏi đường."],
+[3,"A: Excuse me, where is the museum? B: ___ It's on your right.","Go along this street for 200 metres.",["Yes, I like museums.","It's delicious.","I'm lost."],"Chỉ đường bằng go along..."],
+[3,"You are at the station. The post office is the second turning on the left. What do you say?","Take the second turning on the left.",["Cross the road twice.","Turn right at the factory.","Go along the river."],"Take the second turning on the left."],
+[3,"'Cross the road' means ___.","Băng qua đường",["Đi dọc đường","Rẽ phải","Đi thẳng"],"cross = băng qua"],
+[3,"Tourist: I'm ___. Can you show me the way to the hotel?","lost",["sandy","heavy","noisy"],"lost = bị lạc"],
+[3,"The cathedral is in the town ___.","square",["suburb","factory","turning"],"square = quảng trường"],
+[3,"My uncle lives in the ___, far from the city centre.","suburb",["square","workshop","cathedral"],"suburb = vùng ngoại ô"],
+[3,"Take the second ___ on the left.","turning",["turn","turned","turns"],"turning (n) = chỗ rẽ"],
+[3,"Go straight ___ you see the pagoda. Then turn right.","until",["because","but","so"],"until = cho đến khi"],
+[3,"Excuse me, is there a post office ___ here?","near",["at","far","between"],"near here = gần đây"],
+[3,"My grandparents live in a ___ village.","faraway",["lost","heavy","delicious"],"faraway = xa xôi"],
+[3,"There is too much ___ on this road at 5 p.m.","traffic",["present","finally","suburb"],"traffic = giao thông"],
+[3,"First, go straight. ___, turn right and you'll see the museum.","Finally",["Present","Traffic","Square"],"finally = cuối cùng"],
+[4,L+"Where does Linh live?","In a quiet neighbourhood in the suburb.",["In a crowded city centre.","Near a factory.","In a sandy village."],"Linh lives in a quiet neighbourhood in the suburb."],
+[4,L+"What is near her house?","A temple and a post office.",["A museum and a restaurant.","A cathedral and a factory.","A railway station and a workshop."],"There is a small temple and a post office near her house."],
+[4,L+"The streets near her house are ___.","narrow",["wide","dirty","sandy"],"The streets are narrow."],
+[4,L+"Is the traffic busy?","No, it isn't.",["Yes, it is.","Yes, it does.","No, it doesn't."],"The traffic is not busy."],
+[4,L+"How does Linh go to the art gallery?","By bus.",["On foot.","By train.","By car."],"She goes there by bus."],
+[4,F+"Blank (1):","crowded",["quiet","sandy","lost"],"many people → crowded"],
+[4,F+"Blank (2):","noisy",["peaceful","sandy","delicious"],"traffic → noisy"],
+[4,F+"Blank (3):","convenient",["faraway","narrow","heavy"],"convenient for shopping = thuận tiện"],
+[4,F+"Blank (4):","dislike",["like","love","enjoy"],"want to move away → dislike the noise"],
+[4,"Find the mistake: 'Turn to left at the post office.'","to left",["Turn","at","post office"],"Correct: Turn left at the post office."],
+[4,"Find the mistake: 'The museum are next to the cathedral.'","are",["The","museum","cathedral"],"The museum is next to the cathedral."],
+[4,"Find the mistake: 'How can I getting to the station?'","getting",["How","can","station"],"How can I get to...? (can + V)"],
+[4,"Find the mistake: 'We goes straight to the pagoda.'","goes",["We","straight","pagoda"],"We go straight to the pagoda."],
+[4,"Which sentence has the same meaning? 'The street is not wide.'","The street is narrow.",["The street is sandy.","The street is famous.","The street is delicious."],"not wide = narrow"],
+[4,"Which sentence has the same meaning? 'There are many people here.'","It is crowded here.",["It is quiet here.","It is lost here.","It is sandy here."],"many people = crowded"],
+[4,"Which sentence has the same meaning? 'The food is very tasty.'","The food is delicious.",["The food is heavy.","The food is dirty.","The food is boring."],"tasty = delicious"],
+[4,"A: Excuse me, how can I get to the railway station? B: ___","Go straight and take the second turning on the left.",["Yes, I can.","It's a train.","I like trains."],"Chỉ đường đến ga."],
+[4,"A: Is the restaurant expensive? B: ___","Yes, it is. A meal costs a lot.",["No, it doesn't.","Yes, it does.","It's on the left."],"expensive = đắt đỏ"],
+[4,"A: Why do you like your neighborhood? B: ___","Because it is peaceful and quiet.",["Because it is dirty and noisy.","Because it is lost.","Because it is heavy."],"peaceful, quiet = lý do để thích"],
+[4,"A: What's your neighbourhood like? B: ___","It's modern and convenient.",["It's at 5 o'clock.","Yes, I like it.","It's my present."],"What ... like? hỏi đặc điểm."]
+];
+H.forEach(h=>add(h[0],h[1],h[2],h[3],h[4]));
+
+let S=[],ans=[],cur=0,t0=0,tm=null,snd=true,fin=0,ac=null;
+const $=id=>document.getElementById(id);
+function show(id){["home","play","end"].forEach(x=>$(x).hidden=x!==id);window.scrollTo(0,0);if(id==="home")clearInterval(tm)}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function start(list){S=list;ans=S.map(()=>-1);cur=0;t0=Date.now();clearInterval(tm);tm=setInterval(()=>{$("tm").textContent=fmt(Math.floor((Date.now()-t0)/1000))},1000);show("play");render()}
+function beep(ok){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=ok?880:200;o.type=ok?"sine":"sawtooth";g.gain.value=.1;o.start();o.stop(ac.currentTime+.18)}catch(e){}}
+function togSnd(){snd=!snd;$("sb").textContent=snd?"🔊":"🔇"}
+function score(){return ans.reduce((s,a,i)=>s+(a===S[i].a?10:0),0)}
+function render(){
+const q=S[cur],a=ans[cur];
+$("qn").textContent="QUESTION "+String(cur+1).padStart(2,"0")+"/"+S.length;
+$("rd").textContent="ROUND "+(q.rd+1)+" – "+RN[q.rd];
+$("im").textContent=q.img||"";$("im").hidden=!q.img;
+$("qt").innerHTML=q.q;$("sc").textContent=score();
+$("pb").style.width=(ans.filter(x=>x>=0).length/S.length*100)+"%";
+const ops=$("ops");ops.innerHTML="";
+q.o.forEach((t,k)=>{const b=document.createElement("button");b.className="op";b.textContent=String.fromCharCode(65+k)+". "+t;
+if(a>=0){b.disabled=true;if(k===q.a)b.classList.add("ok");else if(k===a)b.classList.add("no")}
+b.onclick=()=>pick(k);ops.appendChild(b)});
+const fb=$("fb");
+if(a>=0){fb.hidden=false;const ok=a===q.a;fb.className=ok?"fo":"fx";
+fb.innerHTML=(ok?"✅ "+(cur%2?"EXCELLENT!":"GREAT JOB!")+" +10":"❌ TRY AGAIN! Correct answer: <u>"+q.o[q.a]+"</u>")+"<br>💡 "+q.e}else fb.hidden=true;
+$("bk").disabled=cur===0;$("nx").textContent=cur===S.length-1?"FINISH 🏁":"NEXT ➡"}
+function pick(k){if(ans[cur]>=0)return;ans[cur]=k;const ok=k===S[cur].a;beep(ok);if(ok)confetti();render()}
+function confetti(){for(let i=0;i<18;i++){const s=document.createElement("span");s.className="cf";s.textContent=["⭐","🎉","✨"][i%3];s.style.left=(20+Math.random()*60)+"vw";s.style.top=(50+Math.random()*20)+"vh";document.body.appendChild(s);setTimeout(()=>s.remove(),1300)}}
+function go(d){const n=cur+d;if(n<0)return;if(n>=S.length){finish();return}cur=n;render()}
+function finish(){
+const un=ans.filter(x=>x<0).length;
+if(un&&!confirm(un+" question(s) are not answered yet. Finish anyway?"))return;
+clearInterval(tm);fin=Math.floor((Date.now()-t0)/1000);
+const n=S.length,c=ans.filter((a,i)=>a===S[i].a).length,w=ans.filter((a,i)=>a>=0&&a!==S[i].a).length,sc=c*10,sc2=Math.round(c/n*1000);
+$("gr").textContent=sc2>=900?"EXCELLENT – XUẤT SẮC":sc2>=800?"VERY GOOD – RẤT TỐT":sc2>=650?"GOOD – TỐT":sc2>=500?"TRY MORE – CẦN CỐ GẮNG":"KEEP PRACTISING – HÃY LUYỆN TẬP THÊM";
+$("stt").innerHTML=`<div>📋 Completed<br>${n-un}/${n}</div><div>✅ Correct<br>${c}</div><div>❌ Wrong<br>${w+un}</div><div>⭐ Score<br>${sc}/${n*10}</div><div>🎯 Accuracy<br>${Math.round(c/n*100)}%</div><div>⏱ Time<br>${fmt(fin)}</div>`;
+$("ch").innerHTML=`<div style="width:${c/n*100}%;background:#22c55e"></div><div style="width:${w/n*100}%;background:#ef4444"></div><div style="width:${un/n*100}%;background:#d1d5db"></div>`;
+wrongList();show("end");beep(true)}
+function item(i,g){const q=S[i],a=ans[i];return `<div class="li ${g?"g":""}"><b>${i+1}.</b> ${q.q.replace(/<br>/g," ")}<br>${a>=0?"Your answer: "+q.o[a]+"<br>":"Not answered<br>"}✅ <b>${q.o[q.a]}</b> – ${q.e}</div>`}
+function wrongList(){let h="",k=0;S.forEach((q,i)=>{if(ans[i]!==q.a){h+=item(i);k++}});$("lt").textContent=k?"📝 Wrong questions ("+k+")":"🌟 No wrong answers!";$("ls").innerHTML=h}
+function review(){let h="";S.forEach((q,i)=>h+=item(i,ans[i]===q.a));$("lt").textContent="📖 All answers";$("ls").innerHTML=h;$("lt").scrollIntoView()}
+function retry(){const w=S.filter((q,i)=>ans[i]!==q.a);if(!w.length){alert("You have no wrong questions. Excellent!");return}start(w)}
+</script>
+</body></html>
